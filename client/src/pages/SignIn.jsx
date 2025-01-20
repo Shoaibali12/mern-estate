@@ -1,5 +1,11 @@
-import { React, useState } from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  signInStart,
+  signInSuccess,
+  signInFailure,
+} from "../redux/user/userSlice";
 
 function SignIn() {
   const [formData, setFormData] = useState({
@@ -7,45 +13,42 @@ function SignIn() {
     password: "",
   });
 
-  const [error, setError] = useState(null);
-  const [successMessage, setSuccessMessage] = useState(null);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { error, loading } = useSelector((state) => state.user);
 
   const handleChange = (e) => {
     setFormData({
       ...formData,
       [e.target.id]: e.target.value,
     });
-    setError(null);
-    setSuccessMessage(null);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    dispatch(signInStart());
     try {
       const res = await fetch("/api/auth/signin", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData), // Send the updated formData
+        body: JSON.stringify(formData),
       });
 
       if (!res.ok) {
         const errorData = await res.json();
-
-        setError(errorData.message || "An error occurred. Please try again.");
+        dispatch(signInFailure(errorData.message || "An error occurred."));
       } else {
         const data = await res.json();
-
+        dispatch(signInSuccess(data)); // Dispatch success with user data
         setFormData({ email: "", password: "" });
         setTimeout(() => {
           navigate("/");
-        });
+        }, 500);
       }
-    } catch (error) {
-      console.error("Request failed:", error);
-      setError("Something went wrong. Please try again later.");
+    } catch (err) {
+      dispatch(signInFailure("Something went wrong. Please try again later."));
     }
   };
 
@@ -58,7 +61,7 @@ function SignIn() {
           placeholder="email"
           className="border p-3 rounded-lg"
           id="email"
-          value={formData.email} // Ensure controlled input
+          value={formData.email}
           onChange={handleChange}
         />
         <input
@@ -66,22 +69,20 @@ function SignIn() {
           placeholder="password"
           className="border p-3 rounded-lg"
           id="password"
-          value={formData.password} // Ensure controlled input
+          value={formData.password}
           onChange={handleChange}
         />
         <button
           type="submit"
           className="bg-slate-700 p-3 rounded-lg text-white uppercase hover:opacity-95 disabled:opacity-80"
+          disabled={loading}
         >
-          Sign in
+          {loading ? "Signing in..." : "Sign in"}
         </button>
       </form>
       {error && <p className="text-red-600 text-sm mt-2">{error}</p>}
-      {successMessage && (
-        <p className="text-green-600 text-sm mt-2">{successMessage}</p>
-      )}
       <div className="mt-5 flex gap-2">
-        <p>Dont have an account</p>
+        <p>Don't have an account?</p>
         <Link to="/sign-up">
           <span className="text-blue-700">Sign Up</span>
         </Link>
