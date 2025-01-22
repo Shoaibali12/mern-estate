@@ -1,5 +1,5 @@
 import React from "react";
-import { FaSearch } from "react-icons/fa";
+import { FaSearch, FaUser } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 
@@ -34,10 +34,18 @@ function Header() {
               About
             </li>
           </Link>
-          <Link to="/sign-in">
-            <li className="sm:inline text-slate-700 hover:underline">
-              Sign in
-            </li>
+          <Link to="/profile">
+            {currentUser ? (
+              <img
+                src={currentUser.avatar}
+                alt="Pofile"
+                className=" rounded-full object-cover w-7 h-7"
+              />
+            ) : (
+              <li className="sm:inline text-slate-700 hover:underline">
+                Sign in
+              </li>
+            )}
           </Link>
         </ul>
       </div>
