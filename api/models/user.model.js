@@ -18,7 +18,7 @@ const userSchema = new mongoose.Schema(
     },
     avatar: {
       type: String,
-      default: "https://uxwing.com/profile-boy-icon/",
+      default: "https://www.w3schools.com/w3images/avatar2.png",
     },
   },
   { timestamps: true }
