@@ -11,6 +11,8 @@ import {
   signOutUserSuccess,
 } from "../redux/user/userSlice";
 
+import { Link } from "react-router-dom";
+
 function Profile() {
   const fileRef = useRef(null);
   const { currentUser } = useSelector((state) => state.user);
@@ -81,6 +83,12 @@ function Profile() {
         <button className="bg-slate-700 p-3 rounded-lg text-white hover:opacity-95 uppercase">
           Update
         </button>
+        <Link
+          to="/create-listing"
+          className="bg-green-700 uppercase p-3 rounded-lg text-white hover:opacity-95 text-center"
+        >
+          Create Listing
+        </Link>
       </form>
       <div className="flex justify-between mt-5">
         <span
