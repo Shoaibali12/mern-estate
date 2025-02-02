@@ -77,6 +77,9 @@ function Profile() {
         console.log(data.message);
         return;
       }
+      setUserListings((prev) =>
+        prev.filter((listing) => listing._id !== listingId)
+      );
     } catch (error) {
       console.log(error.message);
     }
