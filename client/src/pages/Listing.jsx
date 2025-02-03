@@ -5,9 +5,12 @@ import SwiperCore from "swiper";
 import { Navigation } from "swiper/modules";
 import "swiper/css/bundle";
 import img1 from "../images/img1.jpeg";
+import img2 from "../images/img2.jpg";
+import img3 from "../images/img3.jpg";
 
 function Listing() {
   SwiperCore.use([Navigation]);
+  const images = [img2, img3];
   const [listing, setListing] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setErrro] = useState(false);
@@ -40,15 +43,17 @@ function Listing() {
       {listing && !loading && !error && (
         <div>
           <Swiper navigation>
-            <SwiperSlide>
-              <div
-                className="h-[550px]"
-                style={{
-                  background: `url(${img1}) center no-repeat`,
-                  backgroundSize: "cover",
-                }}
-              ></div>
-            </SwiperSlide>
+            {images.map((img, index) => (
+              <SwiperSlide key={index}>
+                <div
+                  className="h-[500px]"
+                  style={{
+                    background: `url(${img}) center no-repeat`,
+                    backgroundSize: "cover",
+                  }}
+                ></div>
+              </SwiperSlide>
+            ))}
           </Swiper>
         </div>
       )}
