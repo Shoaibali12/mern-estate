@@ -13,7 +13,6 @@ export const listingSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-
   regularPrice: {
     type: Number,
     required: true,
@@ -46,10 +45,16 @@ export const listingSchema = new mongoose.Schema({
     type: Boolean,
     required: true,
   },
-
   userRef: {
     type: String,
     required: true,
+  },
+  imageUrls: {
+    type: [String],
+    default: [
+      "https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg",
+      "https://images.pexels.com/photos/1396122/pexels-photo-1396122.jpeg",
+    ],
   },
 });
 
