@@ -9,6 +9,9 @@ import {
   signOutUserFail,
   signOutUserStart,
   signOutUserSuccess,
+  updateUserFailure,
+  updateUserStart,
+  updateUserSuccess,
 } from "../redux/user/userSlice";
 import { Link } from "react-router-dom";
 import img1 from "../images/img1.jpeg";
@@ -19,6 +22,7 @@ function Profile() {
   const [showListingErro, setShowListingError] = useState(false);
   const [userListings, setUserListings] = useState([]);
   const dispatch = useDispatch();
+  const [formData, setFormData] = useState({});
 
   const handleDeleteUser = async () => {
     try {
@@ -85,10 +89,38 @@ function Profile() {
     }
   };
 
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.id]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      dispatch(updateUserStart());
+      const res = await fetch(`/api/user/update/${currentUser._id}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+      const data = await res.json();
+      if (data.success === false) {
+        dispatch(updateUserFailure(data.message));
+        return;
+      }
+
+      dispatch(updateUserSuccess(data));
+      setUpdateSuccess(true);
+    } catch (error) {
+      dispatch(updateUserFailure(error.message));
+    }
+  };
+
   return (
     <div className="p-3 max-w-lg mx-auto">
       <h1 className="text-3xl font-semibold text-center py-7">Profile</h1>
-      <form className="flex flex-col gap-4">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <input type="file" ref={fileRef} hidden accept="image/*" />
         <img
           onClick={() => fileRef.current.click()}
@@ -102,18 +134,22 @@ function Profile() {
           className="border p-3 rounded-lg"
           id="username"
           defaultValue={currentUser.username}
+          onChange={handleChange}
         />
         <input
           type="email"
           placeholder="email"
           id="email"
           className="border p-3 rounded-lg"
+          defaultValue={currentUser.email}
+          onChange={handleChange}
         />
         <input
           type="password"
           placeholder="password"
           id="password"
           className="border p-3 rounded-lg"
+          onChange={handleChange}
         />
         <button className="bg-slate-700 p-3 rounded-lg text-white hover:opacity-95 uppercase">
           Update
